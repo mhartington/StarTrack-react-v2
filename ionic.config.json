@@ -1,0 +1,7 @@
+{
+  "name": "StarTrack-react-v2",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
