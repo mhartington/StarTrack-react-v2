@@ -1,0 +1,58 @@
+.browse-page {
+  h1 {
+    font-weight: 700;
+    margin-top: 5px;
+    margin-bottom: 20px;
+  }
+  ion-list-header {
+    padding-left: 16px;
+  }
+  a.album-preview-item {
+    width: 162px;
+    ion-card {
+      width: 162px;
+      height: 162px;
+    }
+  }
+  .album-grid {
+    display: grid;
+    grid-auto-flow: column dense;
+    grid-template-rows: auto auto;
+    grid-gap: 16px 16px;
+    margin: 16px;
+    justify-content: left;
+    overflow-x: scroll;
+    width: 100%;
+    scroll-snap-type: x mandatory;
+    grid-auto-flow: column;
+    &::after {
+      content: '';
+      width: 1px;
+      margin-right: -1px;
+    }
+    a.album-preview-item {
+      scroll-snap-align: start start;
+    }
+  }
+  .song-grid {
+    overflow-x: scroll;
+    display: grid;
+    grid-template-columns: repeat(8, min(90%, 320px));
+    grid-template-rows: repeat(4, auto);
+    grid-gap: 8px 16px;
+    padding: 0 16px;
+    justify-content: left;
+    scroll-snap-type: x mandatory;
+    grid-auto-flow: column;
+    &::after {
+      content: '';
+      width: 1px;
+      margin-right: -1px;
+    }
+
+    ion-item.song-item {
+      --item-border-color: #ffffff0b;
+      scroll-snap-align: start start;
+    }
+  }
+}

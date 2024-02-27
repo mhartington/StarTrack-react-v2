@@ -1,96 +1,178 @@
 import {
+  IonAccordion,
+  IonAccordionGroup,
   IonContent,
+  IonHeader,
   IonIcon,
   IonItem,
+  IonItemGroup,
   IonLabel,
   IonList,
-  IonListHeader,
   IonMenu,
   IonMenuToggle,
-  IonNote,
+  IonTitle,
+  IonToolbar,
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
-import './Menu.css';
-
-interface AppPage {
-  url: string;
-  iosIcon: string;
-  mdIcon: string;
-  title: string;
-}
-
-const appPages: AppPage[] = [
-  {
-    title: 'Inbox',
-    url: '/folder/Inbox',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
-  },
-  {
-    title: 'Outbox',
-    url: '/folder/Outbox',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
-  },
-  {
-    title: 'Favorites',
-    url: '/folder/Favorites',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp
-  },
-  {
-    title: 'Archived',
-    url: '/folder/Archived',
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp
-  },
-  {
-    title: 'Trash',
-    url: '/folder/Trash',
-    iosIcon: trashOutline,
-    mdIcon: trashSharp
-  },
-  {
-    title: 'Spam',
-    url: '/folder/Spam',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
-  }
-];
-
-const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+import {
+  albumsOutline,
+  chevronForward,
+  gridOutline,
+  logIn,
+  logOut,
+  musicalNote,
+  search,
+  timeOutline,
+} from 'ionicons/icons';
+import { useMusickit } from '../context/musickit';
+import { useEffect, useState } from 'react';
 
 const Menu: React.FC = () => {
   const location = useLocation();
+  const { mk, mkEvents } = useMusickit();
+  const [isLoggedIn, setIsLoggedIn] = useState(mk.isAuthorized);
+  const [selectedStatus, setSelectedStatus] = useState('library');
 
+  async function login() {
+    await mk.authorize();
+  }
+
+  async function logout() {
+    await mk.unauthorize();
+  }
+  const handleStatusChange =  () => setIsLoggedIn(mk.isAuthorized);
+  useEffect(() => {
+    mk.addEventListener(mkEvents.authorizationStatusDidChange, handleStatusChange);
+
+    return () => {
+      mk.removeEventListener(mkEvents.authorizationStatusDidChange, handleStatusChange);
+    };
+  }, []);
   return (
     <IonMenu contentId="main" type="overlay">
+      <IonHeader translucent={true}>
+        <IonToolbar>
+          <IonTitle>Music</IonTitle>
+        </IonToolbar>
+      </IonHeader>
       <IonContent>
-        <IonList id="inbox-list">
-          <IonListHeader>Inbox</IonListHeader>
-          <IonNote>hi@ionicframework.com</IonNote>
-          {appPages.map((appPage, index) => {
-            return (
-              <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                  <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                  <IonLabel>{appPage.title}</IonLabel>
+        <IonHeader collapse="condense">
+          <IonToolbar>
+            <IonTitle size="large">Music</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+
+        <IonList lines="none">
+          <IonItemGroup>
+            <IonMenuToggle autoHide={false}>
+              <IonItem
+                routerLink="/browse"
+                routerDirection="root"
+                className={location.pathname === '/browse' ? 'selected' : ''}
+                detail={false}
+              >
+                <IonIcon
+                  color="primary"
+                  slot="start"
+                  src={gridOutline}
+                ></IonIcon>
+                Browse
+              </IonItem>
+            </IonMenuToggle>
+            <IonMenuToggle autoHide={false}>
+              <IonItem
+                routerLink="/search"
+                routerDirection="root"
+                className={location.pathname === '/search' ? 'selected' : ''}
+                detail={false}
+              >
+                <IonIcon color="primary" slot="start" src={search}></IonIcon>
+                Search
+              </IonItem>
+            </IonMenuToggle>
+          </IonItemGroup>
+          {isLoggedIn ? (
+            <>
+              <IonAccordionGroup
+                multiple={true}
+                value={selectedStatus}
+                onIonChange={(e) => setSelectedStatus(e.detail.value)}
+              >
+                <IonAccordion value="library" toggleIcon={chevronForward}>
+                  <IonItem slot="header">
+                    <IonLabel>
+                      <h1>Library</h1>
+                    </IonLabel>
+                  </IonItem>
+                  <IonList slot="content">
+                    <IonMenuToggle autoHide={false}>
+                      <IonItem
+                        routerLink="/search"
+                        routerDirection="root"
+                        detail={false}
+                      >
+                        <IonIcon
+                          color="primary"
+                          slot="start"
+                          src={timeOutline}
+                        ></IonIcon>
+                        Recently Added
+                      </IonItem>
+                    </IonMenuToggle>
+                    <IonMenuToggle autoHide={false}>
+                      <IonItem routerDirection="root" detail={false}>
+                        <IonIcon
+                          color="primary"
+                          slot="start"
+                          src={albumsOutline}
+                        ></IonIcon>
+                        Album
+                      </IonItem>
+                    </IonMenuToggle>
+                    <IonMenuToggle autoHide={false}>
+                      <IonItem
+                        routerLink="/search"
+                        routerDirection="root"
+                        detail={false}
+                      >
+                        <IonIcon
+                          color="primary"
+                          slot="start"
+                          src={musicalNote}
+                        ></IonIcon>
+                        Songs
+                      </IonItem>
+                    </IonMenuToggle>
+                  </IonList>
+                </IonAccordion>
+              </IonAccordionGroup>
+
+              <IonMenuToggle autoHide={false}>
+                <IonItem
+                  onClick={logout}
+                  lines="none"
+                  button={true}
+                  detail={false}
+                >
+                  <IonIcon src={logOut} slot="start" color="primary"></IonIcon>
+                  Log Out
                 </IonItem>
               </IonMenuToggle>
-            );
-          })}
-        </IonList>
-
-        <IonList id="labels-list">
-          <IonListHeader>Labels</IonListHeader>
-          {labels.map((label, index) => (
-            <IonItem lines="none" key={index}>
-              <IonIcon aria-hidden="true" slot="start" icon={bookmarkOutline} />
-              <IonLabel>{label}</IonLabel>
-            </IonItem>
-          ))}
+            </>
+          ) : (
+            <IonMenuToggle autoHide={false}>
+              <IonItem
+                onClick={login}
+                lines="none"
+                button={true}
+                detail={false}
+              >
+                <IonIcon src={logIn} slot="start" color="primary"></IonIcon>
+                Log In
+              </IonItem>
+            </IonMenuToggle>
+          )}
         </IonList>
       </IonContent>
     </IonMenu>

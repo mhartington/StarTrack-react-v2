@@ -1,0 +1,228 @@
+ion-content {
+  &::part(scroll) {
+    padding-bottom: 0px !important;
+  }
+}
+.modal-wrapper {
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+  z-index: 1;
+
+  .track-player {
+    height: 100%;
+    width: 85%;
+    margin: auto;
+    z-index: 1;
+
+    display: grid;
+    grid-template-rows: 70% 30%;
+    grid-template-areas:
+      'now-playing'
+      'controls';
+
+    .song-info {
+      overflow: hidden;
+      transform-origin: center center;
+      width: 100%;
+      grid-area: now-playing;
+      z-index: 1;
+
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr auto;
+      grid-auto-flow: row;
+
+      grid-template-areas: 'artwork' 'title';
+      margin-left: auto;
+      margin-right: auto;
+
+      ion-thumbnail {
+        transform-origin: center center;
+        margin: 0 auto;
+        --thumbnail-transition-duration: 500ms;
+
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        overflow: hidden;
+        display: flex;
+
+        /* now-playing-artwork, ion-thumbnail { */
+        ion-thumbnail .lazy-img {
+          margin: auto;
+          max-height: 100%;
+          max-width: 100%;
+
+          height: auto;
+          width: auto;
+
+          aspect-ratio: 1;
+        }
+      }
+
+      ion-label {
+        padding: 16px 0;
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+
+        * {
+          line-height: 1.2;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        h3 {
+          font-size: 1.1em;
+          font-weight: 600;
+        }
+        p {
+          font-size: 1em;
+          opacity: 0.5;
+        }
+      }
+    }
+
+    .controls-wrapper {
+      width: 100%;
+      grid-area: controls;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin-left: auto;
+      margin-right: auto;
+
+      .song-actions {
+        flex: initial;
+        justify-content: space-evenly;
+        height: 56px;
+        ion-button {
+          width: 70px;
+          aspect-ratio: 1/1;
+          height: unset;
+
+          ion-icon {
+            font-size: 48px;
+          }
+
+          .shuffle-button,
+          .repeat-button {
+            width: 40px;
+            ion-icon {
+              font-size: 40px;
+            }
+
+            ion-badge {
+              top: 5px;
+              right: -6px;
+            }
+          }
+        }
+      }
+
+      ion-range {
+        margin-top: auto;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+
+        .duration-label {
+          width: unset;
+          display: unset;
+          position: absolute;
+          bottom: -15px;
+          font-size: 0.75em;
+          font-variant-numeric: tabular-nums;
+          color: #ffffff;
+          &[slot='start'] {
+            left: 0;
+            text-align: left;
+          }
+
+          &[slot='end'] {
+            right: 0;
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (orientation: portrait) {
+  .modal-wrapper {
+    .song-info {
+      now-playing-artwork {
+        view-transition-name: thumbnail;
+      }
+      ion-label {
+        view-transition-name: label;
+      }
+    }
+  }
+  .modal-wrapper.animation-start {
+    now-playing-artwork {
+      --thumbnail-transition-duration: 0ms !important;
+    }
+  }
+  .modal-wrapper.queue-active {
+    .track-player {
+      grid-template-rows: auto 50% 30%;
+
+      grid-template-areas:
+        'now-playing'
+        'queue'
+        'controls';
+    }
+    .song-info {
+      flex: initial;
+      align-items: center;
+      grid-template-columns: 18% auto;
+      grid-gap: 0 20px;
+    }
+    queue-list {
+      ion-badge {
+        top: 3px;
+        right: -7px;
+      }
+    }
+  }
+}
+
+@media (orientation: landscape) {
+  .modal-wrapper {
+    .track-player {
+      width: 100%;
+      max-width: unset;
+      grid-template-columns: 1fr minmax(45%, 500px) 1fr;
+      grid-template-areas:
+        '. now-playing .'
+        '. controls .';
+
+      .song-info {
+        view-transition-name: song-info;
+      }
+      .controls-wrapper {
+        view-transition-name: controls;
+      }
+      .song-info,
+      .controls-wrapper {
+        width: 85%;
+        max-width: 500px;
+      }
+    }
+  }
+
+  .modal-wrapper.queue-active {
+    .track-player {
+      grid-template-columns: minmax(45%, 500px) auto;
+      grid-template-areas:
+        'now-playing queue'
+        'controls    queue';
+    }
+  }
+}
