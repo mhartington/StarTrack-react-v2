@@ -16,6 +16,7 @@ import { BrowsePage } from './pages/browse/browse.page';
 import { AlbumPage } from './pages/album/album.page';
 import { PlaylistPage } from './pages/playlist/playlist.page';
 import { TrackPlayer } from './components/track-player/track-player.component';
+import { SearchPage } from './pages/search/search.pages';
 
 setupIonicReact();
 
@@ -38,6 +39,9 @@ const App: React.FC = () => {
               </Route>
               <Route path="/us/playlist/:id" exact={true}>
                 <PlaylistPage />
+              </Route>
+              <Route path="/search" exact={true}>
+                <SearchPage/>
               </Route>
             </IonRouterOutlet>
             <TrackPlayer />

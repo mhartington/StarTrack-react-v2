@@ -2,6 +2,7 @@ import {
   IonButton,
   IonButtons,
   IonContent,
+  IonFooter,
   IonHeader,
   IonIcon,
   IonLabel,
@@ -17,6 +18,7 @@ import { usePlayer, usePlayerState } from '../../context/player';
 import { LazyImg } from '../lazy-img/lazy-img.component';
 import {
   ellipsisHorizontal,
+  list,
   pause,
   play,
   playBack,
@@ -26,6 +28,9 @@ import {
 } from 'ionicons/icons';
 import { PlaybackStates } from '../../@types/player';
 import { useEffect, useState } from 'react';
+import { BackgroundGlow } from '../background-glow/background-glow.component';
+import useLocalStorageState from 'use-local-storage-state';
+import { QueueList } from '../queue-list/queue-list.component';
 
 function pad2(num: any) {
   if (num <= 99) {
@@ -52,12 +57,33 @@ export function PlayerModal() {
     usePlayer();
 
   const [isScrubbing, setIsScrubbing] = useState(false);
-  const [playbackTime, setPlaybackTime] = useState(0);
+  const [playbackTime, setPlaybackTime] = useState(state.playbackTime);
+  const [volumeLevel, setVolumeLevel] = useState(state.volume);
+  const [isActive, setIsActive] = useLocalStorageState(
+    'star-track:queue-active',
+    { defaultValue: false },
+  );
+
+  function toggleActive() {
+    if ((document as any)?.startViewTransition) {
+      (document as any).startViewTransition(() => {
+        setIsActive(!isActive);
+      });
+    }
+  }
+
   useEffect(() => {
     if (isScrubbing === false) {
       setPlaybackTime(state.playbackTime);
     }
   }, [state.playbackTime]);
+
+  useEffect(() => {
+    if (isScrubbing === false) {
+      setVolumeLevel(state.volume);
+    }
+  }, [state.volume]);
+
   function pauseSeeking(e: RangeCustomEvent) {
     e.stopPropagation();
     setIsScrubbing(true);
@@ -67,13 +93,19 @@ export function PlayerModal() {
     setIsScrubbing(false);
     seekToTime(e.detail.value as number);
   }
+
+  function setVolume(e: RangeCustomEvent) {
+    e.stopPropagation();
+    setIsScrubbing(false);
+    setVol(e.detail.value);
+  }
   return (
     <>
-      <IonHeader>
-        <IonToolbar></IonToolbar>
+      <IonHeader class="ion-no-border">
+        <IonToolbar class="transparent"></IonToolbar>
       </IonHeader>
       <IonContent scrollX={false} scrollY={false}>
-        <div className="modal-wrapper">
+        <div className={`modal-wrapper ${isActive ? 'queue-active' : null}`}>
           <div className="track-player">
             <div className="song-info">
               <IonThumbnail>
@@ -109,7 +141,9 @@ export function PlayerModal() {
                 ) : null}
               </IonLabel>
             </div>
-
+            <QueueList>
+                <p></p>
+            </QueueList>
             <div className="controls-wrapper">
               <IonRange
                 step={1}
@@ -141,34 +175,43 @@ export function PlayerModal() {
               <IonButtons className="song-actions">
                 <IonButton
                   shape="round"
-                  color="primary"
+                  color="white"
                   fill="clear"
                   className="prev-button"
-                  onClick={skipToPrevious}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    skipToPrevious();
+                  }}
                 >
-                  <IonIcon icon={playBack} slot="icon-only" />
+                  <IonIcon icon={playBack} slot="icon-only" color="white" />
                 </IonButton>
                 <IonButton
                   shape="round"
-                  color="primary"
+                  color="white"
                   fill="clear"
-                  onClick={togglePlay}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePlay();
+                  }}
                 >
                   {state.playbackState === PlaybackStates.LOADING ? (
-                    <IonSpinner />
+                    <IonSpinner color="white" />
                   ) : state.playbackState === PlaybackStates.PLAYING ? (
-                    <IonIcon icon={pause} slot="icon-only" />
+                    <IonIcon icon={pause} slot="icon-only" color="white" />
                   ) : (
-                    <IonIcon icon={play} slot="icon-only" />
+                    <IonIcon icon={play} slot="icon-only" color="white" />
                   )}
                 </IonButton>
                 <IonButton
                   shape="round"
-                  color="primary"
+                  color="white"
                   fill="clear"
-                  onClick={skipToNext}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    skipToNext();
+                  }}
                 >
-                  <IonIcon icon={playForward} slot="icon-only" />
+                  <IonIcon icon={playForward} slot="icon-only" color="white" />
                 </IonButton>
               </IonButtons>
 
@@ -178,8 +221,10 @@ export function PlayerModal() {
                 step={0.01}
                 min={0}
                 max={1}
-                onIonInput={(e) => setVol(e.detail.value as number)}
-                value={state.volume}
+                onIonKnobMoveStart={(e) => pauseSeeking(e)}
+                onIonKnobMoveEnd={(e) => setVolume(e)}
+                onIonInput={(e) => setVolume(e)}
+                value={volumeLevel}
               >
                 <IonIcon color="white" slot="start" icon={volumeOff} />
                 <IonIcon color="white" slot="end" icon={volumeHigh} />
@@ -188,6 +233,16 @@ export function PlayerModal() {
           </div>
         </div>
       </IonContent>
+      <IonFooter class="ion-no-border">
+        <IonToolbar class="transparent">
+          <IonButtons slot="end">
+            <IonButton color="white" onClick={toggleActive}>
+              <IonIcon slot="icon-only" icon={list} />
+            </IonButton>
+          </IonButtons>
+        </IonToolbar>
+      </IonFooter>
+      <BackgroundGlow src={state.nowPlaying.attributes?.artwork?.url!} />
     </>
   );
 }

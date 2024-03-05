@@ -1,0 +1,37 @@
+.queue-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+  .song-item {
+    --text-color: #fff;
+    --padding-begin: 0;
+    --ion-item-border-color: #ffffff0b;
+    --padding-start: 0;
+  }
+
+  .queue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    p {
+      margin: 0;
+      font-weight: bold;
+    }
+
+    ion-badge {
+      top: 3px;
+      right: -3px;
+    }
+  }
+  .queue-scroller {
+    flex: 1;
+    overflow: auto;
+    overscroll-behavior-y: none;
+    height: 100%;
+  }
+}

@@ -163,7 +163,6 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-white-contrast-rgb: 0, 0, 0;
     --ion-color-white-shade: #e0e0e0;
     --ion-color-white-tint: #ffffff;
-
   }
 
   .ios {
@@ -194,7 +193,6 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-step-950: #f2f2f2;
 
     --ion-toolbar-background: #000000;
-
   }
 
   .md {
@@ -225,7 +223,6 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-step-850: #dbdbdb;
     --ion-color-step-900: #e7e7e7;
     --ion-color-step-950: #f3f3f3;
-
   }
 }
 html {
@@ -271,68 +268,6 @@ html {
 ion-range::part(knob) {
   outline: 5px solid var(--ion-color-background);
 }
-.full-modal {
-  --width: 100% !important;
-  --height: 100% !important;
-  &::part(content) {
-    border-radius: 0;
-    --background: #5a5960;
-  }
-
-  ion-range {
-    --bar-height: 8px;
-    --bar-border-radius: 8px;
-    --bar-background: #ffffff63;
-
-    --knob-size: 10px;
-    --knob-border-radius: 8px;
-    --knob-box-shadow: none;
-    --knob-background: none;
-    --knob-handle-size: 10px;
-
-    --transform-value: scale3d(1, 1, 1);
-    --opacity: 0.5;
-
-    transition:
-      background,
-      transform 250ms ease-in-out;
-    opacity: var(--opacity);
-
-    &::part(bar-active) {
-      transform: var(--transform-value);
-      transition: transform 250ms ease-in-out;
-    }
-
-    &::part(bar) {
-      transform: var(--transform-value);
-      transition: transform 250ms ease-in-out;
-    }
-
-    &::part(knob) {
-      opacity: 0;
-      transform: var(--transform-value);
-      transition: transform 250ms ease-in-out;
-
-      &::before {
-        opacity: 0;
-      }
-    }
-
-    &.range-pressed {
-      --transform-value: scale3d(1, 2, 1);
-      --opacity: 1;
-      &::part(knob) {
-        &::before {
-          opacity: 0;
-        }
-      }
-    }
-  }
-  ion-range:focus-within {
-    --transform-value: scale3d(1, 2, 1);
-    --opacity: 1;
-  }
-}
 html.ios ion-modal .ion-page {
   border-radius: 0 !important;
 }
@@ -350,7 +285,7 @@ div.route-wrapper {
 
 ion-split-pane {
   overflow: hidden;
-  z-index:-1;
+  z-index: -1;
 }
 
 .split-pane-md.split-pane-visible:not(.plt-desktop) > .split-pane-side {
@@ -461,7 +396,7 @@ ion-accordion {
   }
 }
 ::view-transition-group(*) {
-  animation-timing-function: linear;
+  animation-timing-function: cubic-bezier(.42,0,.58,1);
   animation-duration: 250ms;
   mix-blend-mode: normal;
 }
@@ -472,7 +407,6 @@ ion-accordion {
   --thumbnail-shadow-opacity: 0;
   transform-origin: top left;
 }
-
 
 ::view-transition-new(thumbnail) {
   animation: none;

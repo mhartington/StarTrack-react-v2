@@ -90,10 +90,14 @@ export function PlayerStateProvider({ children }: { children: JSX.Element }) {
       case 'shuffleModeDidChange':
         return { ...state, shuffleMode: action.payload };
 
+      case 'playbackVolumeDidChange': 
+        return {...state, volume: mk.volume}
+
       case 'repeatModeDidChange':
         return { ...state, repeatMode: action.payload };
       default:
         return state;
+
     }
   };
   useEffect(() => {
@@ -128,10 +132,11 @@ export function usePlayerState() {
 // Player actions
 export function usePlayer() {
   const { mk } = useMusickit();
-  const [volume, setVolume] = useState(mk.volume);
+  const [volume, setVol] = useState(mk.volume);
   useEffect(() => {
       mk.volume = volume
   }, [volume])
+
   async function playCollection(opts: QueueOpts) {
     await mk.setQueue(opts);
     toggleShuffle(opts.shuffle || false);
@@ -173,9 +178,9 @@ export function usePlayer() {
     await mk.seekToTime(time);
   }
 
-  function setVol(vol: number){
-    setVolume(vol)
-  }
+  /* function setVol(vol: number){ */
+  /*   setVolume(vol) */
+  /* } */
 
   
 

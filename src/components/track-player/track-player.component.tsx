@@ -93,7 +93,7 @@ export function TrackPlayer() {
                 color="primary"
                 fill="clear"
                 className="prev-button"
-                onClick={skipToPrevious}
+                onClick={(e) => {e.stopPropagation(); skipToPrevious()}}
               >
                 <IonIcon icon={playBack} slot="icon-only" />
               </IonButton>
@@ -101,7 +101,7 @@ export function TrackPlayer() {
                 shape="round"
                 color="primary"
                 fill="clear"
-                onClick={togglePlay}
+                onClick={(e) => {e.stopPropagation(); togglePlay()}}
               >
                 {state.playbackState === PlaybackStates.LOADING ? (
                   <IonSpinner />
@@ -115,7 +115,7 @@ export function TrackPlayer() {
                 shape="round"
                 color="primary"
                 fill="clear"
-                onClick={skipToNext}
+                onClick={(e) => {e.stopPropagation(); skipToNext()}}
               >
                 <IonIcon icon={playForward} slot="icon-only" />
               </IonButton>

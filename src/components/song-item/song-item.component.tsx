@@ -26,6 +26,7 @@ export function SongItem({
   songName,
   artistName,
   onClick,
+  routerLink,
   children,
 }: {
   onClick?: React.MouseEventHandler<HTMLIonItemElement>;
@@ -35,6 +36,7 @@ export function SongItem({
   songName?: string;
   artistName?: string;
   children?: JSX.Element;
+  routerLink?: string | undefined
 }) {
   return (
     <IonItem
@@ -43,6 +45,7 @@ export function SongItem({
       disabled={disabled}
       className="song-item"
       onClick={onClick}
+      routerLink={routerLink}
     >
       {children}
       {index ? (

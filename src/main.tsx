@@ -4,14 +4,13 @@ import { MusickitProvider } from './context/musickit';
 import { PlayerStateProvider } from './context/player';
 
 const token = import.meta.env.VITE_MUSICKIT_TOKEN;
-  const container = document.getElementById('root');
-  const root = createRoot(container!);
-  root.render(
+const container = document.getElementById('root');
+const root = createRoot(container!);
 
-
-    <MusickitProvider token={token}>
-      <PlayerStateProvider>
-    <App />
+root.render(
+  <MusickitProvider token={token}>
+    <PlayerStateProvider>
+      <App />
     </PlayerStateProvider>
-  </MusickitProvider>
-  );
+  </MusickitProvider>,
+);
