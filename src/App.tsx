@@ -6,7 +6,7 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Route } from 'react-router-dom';
-import Menu from './components/Menu';
+import { Menu } from './components/menu/menu.component';
 
 import '@ionic/react/css/ionic.bundle.css';
 import './theme/variables.css';
@@ -41,7 +41,7 @@ const App: React.FC = () => {
                 <PlaylistPage />
               </Route>
               <Route path="/search" exact={true}>
-                <SearchPage/>
+                <SearchPage />
               </Route>
             </IonRouterOutlet>
             <TrackPlayer />

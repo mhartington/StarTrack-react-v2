@@ -1,33 +1,36 @@
-import './background-glow.component.css';
+import { useMemo, useRef } from 'react';
 import { formatArtwork } from '../lazy-img/lazy-img.component';
-import { useRef } from 'react';
 
-import {
-  Application,
-  Assets,
-  Container,
-  Graphics,
-  Point,
-  Sprite,
-} from 'pixi.js';
-import { useLayoutEffect } from 'react';
-import { TwistFilter } from '@pixi/filter-twist';
 import { AdjustmentFilter } from '@pixi/filter-adjustment';
 import { KawaseBlurFilter } from '@pixi/filter-kawase-blur';
+import { TwistFilter } from '@pixi/filter-twist';
+import {
+    Application,
+    Assets,
+    Container,
+    Graphics,
+    Point,
+    Sprite,
+} from 'pixi.js';
+import { useLayoutEffect } from 'react';
 
+import './background-glow.component.css';
 async function createApp(root: HTMLCanvasElement | undefined, src: string) {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
   const app = new Application({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width,
+    height,
     view: root,
-    powerPreference: 'low-power',
     backgroundAlpha: 0,
     resizeTo: window,
+    autoDensity: true,
   });
 
   const graphics = new Graphics();
   graphics.beginFill('#5a5960');
-  graphics.drawRect(0, 0, app.renderer.width, app.renderer.height);
+  graphics.drawRect(0, 0, app.screen.width, app.screen.height);
   graphics.endFill();
 
   app.ticker.maxFPS = 15;
@@ -175,7 +178,7 @@ function initAnimation(app: Application, container: Container) {
   const saturationFilter = new AdjustmentFilter({
     saturation: 2.75,
     brightness: 0.7,
-    contrast: 1.9
+    contrast: 1.9,
   });
 
   container.filters = [twistingFilter, n, o, h, a, l, saturationFilter];
@@ -210,12 +213,15 @@ export function BackgroundGlow({ src }: { src: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const app = useRef<Application>();
   const container = useRef<Container>();
-
+  
+  const artwork = useMemo(() => {
+    return formatArtwork(src, 50)
+  }, [src])
   useLayoutEffect(() => {
     (async () => {
       const createResults = await createApp(
         canvas.current!,
-        formatArtwork(src, 600),
+        artwork,
       );
       app.current = createResults.app;
       container.current = createResults.container;
@@ -233,11 +239,11 @@ export function BackgroundGlow({ src }: { src: string }) {
         await updateArtwork(
           app.current,
           container.current,
-          formatArtwork(src, 600),
+          artwork,
         );
       }
     })();
-  }, [src]);
+  }, [artwork]);
 
   return (
     <div className="glow-wrapper">

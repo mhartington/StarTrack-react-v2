@@ -1,11 +1,11 @@
 import {
-  IonItem,
-  IonText,
-  IonLabel,
   IonButton,
   IonIcon,
-  IonSkeletonText,
+  IonItem,
+  IonLabel,
   IonNote,
+  IonSkeletonText,
+  IonText,
 } from '@ionic/react';
 import { ellipsisHorizontal } from 'ionicons/icons';
 import './song-item.component.css';
@@ -27,6 +27,7 @@ export function SongItem({
   artistName,
   onClick,
   routerLink,
+  style,
   children,
 }: {
   onClick?: React.MouseEventHandler<HTMLIonItemElement>;
@@ -36,10 +37,12 @@ export function SongItem({
   songName?: string;
   artistName?: string;
   children?: JSX.Element;
-  routerLink?: string | undefined
+  routerLink?: string | undefined;
+  style?: React.CSSProperties;
 }) {
   return (
     <IonItem
+      style={style}
       button={true}
       detail={false}
       disabled={disabled}

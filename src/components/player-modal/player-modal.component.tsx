@@ -110,6 +110,7 @@ export function PlayerModal() {
             <div className="song-info">
               <IonThumbnail>
                 <LazyImg
+                  className={`${state.playbackState === PlaybackStates.PAUSED || state.playbackState === PlaybackStates.NONE || state.playbackState === PlaybackStates.STOPPED ? 'paused' : '' }`}
                   width={500}
                   src={state.nowPlaying.attributes?.artwork?.url}
                   alt="The album artwork cover"

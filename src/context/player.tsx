@@ -4,16 +4,16 @@ import {
   useEffect,
   useReducer,
   useState,
-} from 'react';
-import { PlaybackStates, PlayerState, QueueOpts } from '../@types/player';
-import { Song, SongAttributes } from '../@types/song';
-import { useMusickit } from './musickit';
+} from "react";
+import { PlaybackStates, PlayerState, QueueOpts } from "../@types/player";
+import { Song, SongAttributes } from "../@types/song";
+import { useMusickit } from "./musickit";
 
 const nowPlayingAttrs: Partial<SongAttributes> = {
-  name: '',
-  artistName: '',
-  albumName: '',
-  artwork: { url: '/assets/imgs/default.svg' },
+  name: "",
+  artistName: "",
+  albumName: "",
+  artwork: { url: "/assets/imgs/default.svg" },
 };
 const nowPlayingInit: Partial<Song> = {
   attributes: nowPlayingAttrs,
@@ -52,52 +52,51 @@ export function PlayerStateProvider({ children }: { children: JSX.Element }) {
     action: { type: string; payload?: any },
   ): PlayerState => {
     switch (action.type) {
-      case 'mediaPlaybackError':
+      case "mediaPlaybackError":
         return { ...state, nowPlaying: nowPlayingInit, queue: [] };
 
-      case 'playbackTimeDidChange':
+      case "playbackTimeDidChange":
         return {
           ...state,
           playbackTime: action.payload.currentPlaybackTime,
           playbackTimeRemaining: action.payload.currentPlaybackTimeRemaining,
         };
 
-      case 'playbackDurationDidChange':
+      case "playbackDurationDidChange":
         return { ...state, playbackDuration: action.payload.duration };
 
-      case 'playbackStateDidChange':
+      case "playbackStateDidChange":
         return { ...state, playbackState: action.payload.state };
 
-      case 'nowPlayingItemDidChange':
+      case "nowPlayingItemDidChange":
         if (action.payload.item) {
           return { ...state, nowPlaying: action.payload.item, playbackTime: 0 };
         }
 
-      case 'queueItemsDidChange':
+      case "queueItemsDidChange":
         return {
           ...state,
           queue: mk.queue.items,
           upNext: mk.queue.unplayedUserItems.slice(1),
         };
 
-      case 'queuePositionDidChange':
+      case "queuePositionDidChange":
         return {
           ...state,
           queuePosition: action.payload.position + 1,
           upNext: mk.queue.unplayedUserItems.slice(1),
         };
 
-      case 'shuffleModeDidChange':
+      case "shuffleModeDidChange":
         return { ...state, shuffleMode: action.payload };
 
-      case 'playbackVolumeDidChange': 
-        return {...state, volume: mk.volume}
+      case "playbackVolumeDidChange":
+        return { ...state, volume: mk.volume };
 
-      case 'repeatModeDidChange':
+      case "repeatModeDidChange":
         return { ...state, repeatMode: action.payload };
       default:
         return state;
-
     }
   };
   useEffect(() => {
@@ -134,8 +133,8 @@ export function usePlayer() {
   const { mk } = useMusickit();
   const [volume, setVol] = useState(mk.volume);
   useEffect(() => {
-      mk.volume = volume
-  }, [volume])
+    mk.volume = volume;
+  }, [volume]);
 
   async function playCollection(opts: QueueOpts) {
     await mk.setQueue(opts);
@@ -174,22 +173,13 @@ export function usePlayer() {
     return await mk.skipToPreviousItem();
   }
   async function seekToTime(time: number) {
-    console.log(typeof time);
     await mk.seekToTime(time);
   }
-
-  /* function setVol(vol: number){ */
-  /*   setVolume(vol) */
-  /* } */
-
-  
-
-  /* async function skipTo(song: Song) { */
-  /*   const index = this.queue().indexOf(song); */
-  /*   await this.stop(); */
-  /*   await this.mkInstance.changeToMediaAtIndex(index); */
-  /* } */
-
+  async function skipTo(song: Song) {
+    const index = mk.queue.indexForItem(song);
+    await stop();
+    await mk.changeToMediaAtIndex(index);
+  }
   return {
     playCollection,
     togglePlay,
@@ -197,6 +187,7 @@ export function usePlayer() {
     skipToNext,
     skipToPrevious,
     seekToTime,
-    setVol
+    setVol,
+    skipTo,
   };
 }

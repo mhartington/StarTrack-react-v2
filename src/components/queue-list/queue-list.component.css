@@ -6,10 +6,13 @@
   overflow: hidden;
 
   .song-item {
-    --text-color: #fff;
+    --color: #fff;
     --padding-begin: 0;
     --ion-item-border-color: #ffffff0b;
     --padding-start: 0;
+    ion-note {
+    color: currentColor;
+    }
   }
 
   .queue-header {

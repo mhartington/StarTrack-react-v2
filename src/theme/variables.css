@@ -400,20 +400,7 @@ ion-accordion {
   animation-duration: 250ms;
   mix-blend-mode: normal;
 }
-::view-transition-group(thumbnail) {
-  --thumbnail-transition-duration: 0;
-  --thumbnail-transition-property: unset;
-  --thumbnail-transition-timing-function: unset;
-  --thumbnail-shadow-opacity: 0;
-  transform-origin: top left;
-}
 
-::view-transition-new(thumbnail) {
-  animation: none;
-}
-::view-transition-old(thumbnail) {
-  display: none;
-}
 @media (orientation: landscape) {
   ::view-transition-old(queue):only-child {
     animation:

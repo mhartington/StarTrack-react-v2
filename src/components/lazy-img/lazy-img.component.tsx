@@ -7,6 +7,7 @@ export function LazyImg({
   src = '',
   alt = '',
   width = 200,
+  className = '',
   bgColor = 'var(--ion-color-step-150)',
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -15,7 +16,7 @@ export function LazyImg({
   };
   return (
     <div
-      className='lazy-img'
+      className={`lazy-img ${className}`}
       style={{ '--background': `${bgColor.includes('var') ? bgColor : "#" + bgColor}` } as React.CSSProperties}
     >
       <img
@@ -23,7 +24,7 @@ export function LazyImg({
         loading='lazy'
         src={formatArtwork(src, width)}
         alt={alt}
-        className={`lazy-img ${isLoaded ? 'loaded' : null}`}
+        className={`${isLoaded ? 'loaded' : null}`}
         onLoad={onImageLoad}
         decoding='async'
       />

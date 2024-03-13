@@ -1,9 +1,16 @@
 import { IonText } from '@ionic/react';
+import { Song } from '../../@types/song';
+import { usePlayer, usePlayerState } from '../../context/player';
 import { SongItem } from '../song-item/song-item.component';
+
 import './queue-list.component.css';
-import { usePlayerState } from '../../context/player';
+
 export function QueueList({ children }: { children: JSX.Element }) {
   const { state } = usePlayerState();
+  const { skipTo } = usePlayer();
+  async function playAt(song: Song) {
+    await skipTo(song);
+  }
   return (
     <div className="queue-list">
       <div className="queue-header">
@@ -19,6 +26,7 @@ export function QueueList({ children }: { children: JSX.Element }) {
             song={song}
             artistName={song.attributes?.artistName}
             songName={song.attributes?.name}
+            onClick={() => playAt(song)}
           ></SongItem>
         ))}
       </div>

@@ -25,10 +25,10 @@ import {
   search,
   timeOutline,
 } from 'ionicons/icons';
-import { useMusickit } from '../context/musickit';
+import { useMusickit } from '../../context/musickit';
 import { useEffect, useState } from 'react';
-
-const Menu: React.FC = () => {
+import './menu.component.css';
+export function Menu() {
   const location = useLocation();
   const { mk, mkEvents } = useMusickit();
   const [isLoggedIn, setIsLoggedIn] = useState(mk.isAuthorized);
@@ -41,12 +41,18 @@ const Menu: React.FC = () => {
   async function logout() {
     await mk.unauthorize();
   }
-  const handleStatusChange =  () => setIsLoggedIn(mk.isAuthorized);
+  const handleStatusChange = () => setIsLoggedIn(mk.isAuthorized);
   useEffect(() => {
-    mk.addEventListener(mkEvents.authorizationStatusDidChange, handleStatusChange);
+    mk.addEventListener(
+      mkEvents.authorizationStatusDidChange,
+      handleStatusChange,
+    );
 
     return () => {
-      mk.removeEventListener(mkEvents.authorizationStatusDidChange, handleStatusChange);
+      mk.removeEventListener(
+        mkEvents.authorizationStatusDidChange,
+        handleStatusChange,
+      );
     };
   }, []);
   return (
@@ -177,6 +183,4 @@ const Menu: React.FC = () => {
       </IonContent>
     </IonMenu>
   );
-};
-
-export default Menu;
+}
