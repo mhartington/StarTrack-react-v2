@@ -3,7 +3,7 @@ ion-menu {
 }
 
 ion-list {
-  background: transparent;
+  background: transparent !important;
 }
 ion-item {
   margin: 10px 0;

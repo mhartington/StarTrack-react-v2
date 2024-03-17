@@ -52,6 +52,7 @@ function durationFromMsHelper(ms: number) {
 const formatMsToSec = (val: number) => durationFromMsHelper(val * 1000);
 
 export function PlayerModal() {
+
   const { state } = usePlayerState();
   const { seekToTime, togglePlay, skipToNext, skipToPrevious, setVol } =
     usePlayer();
@@ -102,7 +103,9 @@ export function PlayerModal() {
   return (
     <>
       <IonHeader class="ion-no-border">
-        <IonToolbar class="transparent"></IonToolbar>
+        <IonToolbar class="transparent">
+          <div className="dismisser"></div>
+        </IonToolbar>
       </IonHeader>
       <IonContent scrollX={false} scrollY={false}>
         <div className={`modal-wrapper ${isActive ? 'queue-active' : null}`}>

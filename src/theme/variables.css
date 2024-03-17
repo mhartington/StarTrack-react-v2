@@ -401,6 +401,15 @@ ion-accordion {
   mix-blend-mode: normal;
 }
 
+::view-transition-old(thumbnail) {
+  opacity:0;
+  animation: none;
+}
+::view-transition-new(thumbnail) {
+  opacity:1;
+  animation: none;
+}
+
 @media (orientation: landscape) {
   ::view-transition-old(queue):only-child {
     animation:

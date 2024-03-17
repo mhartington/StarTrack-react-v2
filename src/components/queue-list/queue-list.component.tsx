@@ -1,9 +1,10 @@
-import { IonText } from '@ionic/react';
+import { IonText, IonThumbnail } from '@ionic/react';
 import { Song } from '../../@types/song';
 import { usePlayer, usePlayerState } from '../../context/player';
 import { SongItem } from '../song-item/song-item.component';
 
 import './queue-list.component.css';
+import { LazyImg } from '../lazy-img/lazy-img.component';
 
 export function QueueList({ children }: { children: JSX.Element }) {
   const { state } = usePlayerState();
@@ -27,7 +28,11 @@ export function QueueList({ children }: { children: JSX.Element }) {
             artistName={song.attributes?.artistName}
             songName={song.attributes?.name}
             onClick={() => playAt(song)}
-          ></SongItem>
+          >
+              <IonThumbnail slot="start">
+                <LazyImg src={song.attributes?.artwork?.url} width={80} />
+              </IonThumbnail>
+          </SongItem>
         ))}
       </div>
     </div>

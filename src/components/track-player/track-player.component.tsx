@@ -30,7 +30,7 @@ export function TrackPlayer() {
   const [playbackTime, setPlaybackTime] = useState(0);
   const [present] = useIonModal(PlayerModal);
 
-  function showModal(e: any) {
+  function showModal() {
     present({canDismiss: true, cssClass: 'full-modal'});
   }
 

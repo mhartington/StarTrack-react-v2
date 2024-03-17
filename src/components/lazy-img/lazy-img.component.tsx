@@ -27,6 +27,8 @@ export function LazyImg({
         className={`${isLoaded ? 'loaded' : null}`}
         onLoad={onImageLoad}
         decoding='async'
+        width={width}
+        height={width}
       />
     </div>
   );
