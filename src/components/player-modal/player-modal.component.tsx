@@ -51,7 +51,7 @@ function durationFromMsHelper(ms: number) {
 
 const formatMsToSec = (val: number) => durationFromMsHelper(val * 1000);
 
-export function PlayerModal() {
+export function PlayerModal({dismiss}: {dismiss: () => void}) {
 
   const { state } = usePlayerState();
   const { seekToTime, togglePlay, skipToNext, skipToPrevious, setVol } =
@@ -70,6 +70,9 @@ export function PlayerModal() {
       (document as any).startViewTransition(() => {
         setIsActive(!isActive);
       });
+    } else {
+        setIsActive(!isActive);
+
     }
   }
 
@@ -104,7 +107,7 @@ export function PlayerModal() {
     <>
       <IonHeader class="ion-no-border">
         <IonToolbar class="transparent">
-          <div className="dismisser"></div>
+          <div className="dismisser" onClick={dismiss}></div>
         </IonToolbar>
       </IonHeader>
       <IonContent scrollX={false} scrollY={false}>
@@ -135,7 +138,7 @@ export function PlayerModal() {
                 </div>
                 {state.nowPlaying.attributes?.name ? (
                   <IonButtons>
-                    <IonButton shape="round">
+                    <IonButton shape="round" color="white">
                       <IonIcon
                         slot="icon-only"
                         src={ellipsisHorizontal}

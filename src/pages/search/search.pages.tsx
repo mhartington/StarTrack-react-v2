@@ -8,8 +8,10 @@ import {
   IonSegmentButton,
   IonSegment,
   IonThumbnail,
+  IonSpinner,
 } from '@ionic/react';
 import { useState } from 'react';
+
 import { useDebouncedCallback } from 'use-debounce';
 import { useMusickit } from '../../context/musickit';
 import { Album } from '../../@types/album';
@@ -19,6 +21,8 @@ import { Playlist } from '../../@types/playlist';
 import './search.page.css';
 import { SongItem } from '../../components/song-item/song-item.component';
 import { LazyImg } from '../../components/lazy-img/lazy-img.component';
+import { usePlayer } from '../../context/player';
+
 type SearchResuls = {
   albums: Album[];
   songs: Song[];
@@ -40,14 +44,10 @@ async function searchAsync(mk: any, term: string) {
     'art[url]': 'f',
   });
   const ogData: SearchResuls = {
-    albums: data.results.albums?.data ?? null,
-    songs: data.results.songs?.data ?? null,
-    playlists: data.results.playlists?.data ?? null,
+    albums: data.results.albums?.data ?? [],
+    songs: data.results.songs?.data ?? [],
+    playlists: data.results.playlists?.data ?? [],
   };
-
-  /* const songsToFetch = ogData.songs.map((song) => song.id); */
-  /* const { data: newSongs } = await this.fetchSongs(songsToFetch); */
-  /* ogData.songs = newSongs.data; */
   return ogData;
 }
 
@@ -58,8 +58,9 @@ function SearchResultsList({
   filterTerm: string;
   results: SearchResuls;
 }) {
-  function playSong(e: any) {
-    console.log(e);
+  const { playCollection } = usePlayer();
+  async function playSong(e: Song) {
+    await playCollection({ song: e.id });
   }
   return (
     <>
@@ -69,11 +70,15 @@ function SearchResultsList({
               song={song}
               songName={song.attributes?.name}
               artistName={song.attributes?.artistName}
-            key={song.id}
+              key={song.id}
+              onClick={() => playSong(song)}
             >
-            <IonThumbnail slot="start">
-              <LazyImg src={song.attributes?.artwork?.url} width={80} ></LazyImg>
-            </IonThumbnail>
+              <IonThumbnail slot="start">
+                <LazyImg
+                  src={song.attributes?.artwork?.url}
+                  width={80}
+                ></LazyImg>
+              </IonThumbnail>
             </SongItem>
           ))
         : null}
@@ -85,14 +90,14 @@ function SearchResultsList({
               songName={album.attributes.name}
               artistName={album.attributes?.artistName}
               routerLink={`/us/album/` + album.id}
-            key={album.id}
+              key={album.id}
             >
-            <IonThumbnail slot="start">
-              <LazyImg
-                src={album.attributes?.artwork?.url}
-                width={80}
-              ></LazyImg>
-            </IonThumbnail>
+              <IonThumbnail slot="start">
+                <LazyImg
+                  src={album.attributes?.artwork?.url}
+                  width={80}
+                ></LazyImg>
+              </IonThumbnail>
             </SongItem>
           ))
         : null}
@@ -105,48 +110,54 @@ function SearchResultsList({
               artistName={playlist.attributes?.curatorName}
               routerLink={`/us/playlist/` + playlist.id}
               onClick={() => {}}
-            key={playlist.id}
+              key={playlist.id}
             >
-            <IonThumbnail slot="start">
-              <LazyImg
-                src={playlist.attributes?.artwork?.url}
-                width={80}
-              ></LazyImg>
-            </IonThumbnail>
+              <IonThumbnail slot="start">
+                <LazyImg
+                  src={playlist.attributes?.artwork?.url}
+                  width={80}
+                ></LazyImg>
+              </IonThumbnail>
             </SongItem>
           ))
         : null}
-
     </>
   );
 }
 
 export function SearchPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] =
-    useState<SearchResuls>(searchResultsInit);
-
-  const [segmentFilter, setSegmentFilter] = useState('songs');
+  const [state, setState] = useState<{
+    searchResults: SearchResuls;
+    searchTerm: string;
+    segmentFilter: string;
+    isLoading: boolean;
+  }>({
+    searchResults: searchResultsInit,
+    searchTerm: '',
+    segmentFilter: 'songs',
+    isLoading: false,
+  });
 
   const { mk } = useMusickit();
   const handleSearch = useDebouncedCallback(async (value = '') => {
+    setState((prev) => ({ ...prev, isLoading: true, searchTerm: value }));
     if (value) {
       const data = await searchAsync(mk, value);
-      setSearchResults(data);
+      setState((prev) => ({ ...prev, searchResults: data, isLoading: false }));
     } else {
-      setSearchResults(searchResultsInit);
+      setState((prev) => ({ ...prev, searchResults: searchResultsInit, isLoading: false, }));
     }
-    setSearchTerm(value);
   }, 500);
+
   return (
     <IonPage className="search-page">
       <IonHeader>
         <IonToolbar>
-          <IonTitle></IonTitle>
+          <IonTitle>Search</IonTitle>
         </IonToolbar>
         <IonToolbar>
           <IonSearchbar
-            value={searchTerm}
+            value={state.searchTerm}
             onIonInput={(e) => handleSearch(e.detail.value)}
           ></IonSearchbar>
         </IonToolbar>
@@ -154,22 +165,38 @@ export function SearchPage() {
       <IonContent>
         <IonSegment
           scrollable
-          value={segmentFilter}
-          onIonChange={(e) => setSegmentFilter(e.detail.value as string)}
+          value={state.segmentFilter}
+          onIonChange={(e) =>
+            setState({ ...state, segmentFilter: e.detail.value as string })
+          }
         >
-          {searchResults.songs.length ? (
+          {state.searchResults.songs.length ? (
             <IonSegmentButton value="songs"> Songs </IonSegmentButton>
           ) : null}
-          {searchResults.albums.length ? (
+          {state.searchResults.albums.length ? (
             <IonSegmentButton value="albums"> Albums </IonSegmentButton>
           ) : null}
-          {searchResults.playlists.length ? (
+          {state.searchResults.playlists.length ? (
             <IonSegmentButton value="playlists"> Playlists </IonSegmentButton>
           ) : null}
         </IonSegment>
-        <SearchResultsList filterTerm={segmentFilter} results={searchResults} />
-        {/* <pre>{JSON.stringify(searchResults, null, 2)}</pre> */}
+        {state.isLoading ? (
+          <Loading />
+        ) : (
+          <SearchResultsList
+            filterTerm={state.segmentFilter}
+            results={state.searchResults}
+          />
+        )}
       </IonContent>
     </IonPage>
+  );
+}
+
+function Loading() {
+  return (
+    <div className="ion-text-center ion-padding">
+      <IonSpinner />
+    </div>
   );
 }

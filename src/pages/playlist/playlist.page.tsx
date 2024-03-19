@@ -16,7 +16,7 @@ import { AlbumHeader } from '../../components/album-header/album-header.componen
 import { SongItem } from '../../components/song-item/song-item.component';
 import { Playlist } from '../../@types/playlist';
 import { LazyImg } from '../../components/lazy-img/lazy-img.component';
-import { usePlayer, usePlayerState } from '../../context/player';
+import { usePlayer } from '../../context/player';
 function LoadingTemplate() {
   return (
     <>

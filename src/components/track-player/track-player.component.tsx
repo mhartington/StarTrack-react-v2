@@ -26,9 +26,12 @@ export function TrackPlayer() {
   const { state } = usePlayerState();
 
   const { togglePlay, seekToTime, skipToNext, skipToPrevious } = usePlayer();
+
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [playbackTime, setPlaybackTime] = useState(0);
-  const [present] = useIonModal(PlayerModal);
+
+
+  const [present, dismiss] = useIonModal(PlayerModal, {dismiss: () => dismiss()});
 
   function showModal() {
     present({canDismiss: true, cssClass: 'full-modal'});
