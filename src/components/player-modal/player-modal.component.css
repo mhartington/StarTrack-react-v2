@@ -141,6 +141,7 @@
               view-transition-name: thumbnail;
               --background: transparent !important;
               margin: auto;
+
               flex: 1;
               aspect-ratio: 1;
 
@@ -289,7 +290,6 @@
 
         .track-player {
           grid-template-rows: 20% 50% 30%;
-
           grid-template-areas:
             'now-playing'
             'queue'

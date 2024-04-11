@@ -65,12 +65,8 @@ export function AlbumHeader({
             <h3>{collection?.attributes?.name}</h3>
             <h3 className="name">
               <IonText color="primary">
-                {collection.type === 'albums'
-                  ? collection.attributes.artistName
-                  : null}
-                {collection.type === 'playlists'
-                  ? collection.attributes.curatorName
-                  : null}
+                {collection.type === 'albums' ? collection.attributes.artistName : null}
+                {collection.type === 'playlists' ? collection.attributes.curatorName : null}
               </IonText>
             </h3>
             <p className="genre-names">
@@ -85,9 +81,7 @@ export function AlbumHeader({
               {/* {collection.type === 'playlists' ? <IonNote>{collection.attributes.lastModifiedDate}</IonNote> : null} */}
             </p>
             <p className="editorial-notes" onClick={() => setShowModal(true)}>
-              {collection.type === 'playlists' ? (
-                <IonNote>{collection.attributes.description.standard}</IonNote>
-              ) : null}
+              {collection.type === 'playlists' ? ( <IonNote>{collection.attributes.description.standard}</IonNote>) : null}
               {collection.type === 'albums' ? (
                 <IonNote>
                   {collection.attributes.editorialNotes?.standard}
